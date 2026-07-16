@@ -41,3 +41,5 @@ data/elasticsearch/
 
 # Jupyter
 .ipynb_checkpoints/
+
+data/corpus/

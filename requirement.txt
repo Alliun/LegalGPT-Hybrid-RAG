@@ -1,0 +1,15 @@
+anthropic
+elasticsearch
+sentence-transformers
+torch
+transformers
+huggingface-hub
+numpy
+scikit-learn
+flask
+flask-cors
+python-dotenv
+requests
+beautifulsoup4
+lxml
+tqdm
