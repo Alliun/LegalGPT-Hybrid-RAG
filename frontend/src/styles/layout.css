@@ -1,0 +1,71 @@
+/* ==========================================
+   APP LAYOUT
+========================================== */
+
+.app{
+
+    display:flex;
+
+    width:100vw;
+
+    height:100vh;
+
+    overflow:hidden;
+
+    background:#111827;
+
+}
+
+/* ==========================================
+   MAIN CONTENT
+========================================== */
+
+.main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-width:0;
+
+    height:100vh;
+
+    overflow:hidden;
+
+    background:#111827;
+
+}
+
+/* ==========================================
+   PAGE CONTENT
+========================================== */
+
+.page{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================
+   CONTENT WRAPPER
+========================================== */
+
+.content{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}

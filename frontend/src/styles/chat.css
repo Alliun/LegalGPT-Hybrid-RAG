@@ -1,0 +1,161 @@
+/* ==========================================
+   CHAT WINDOW
+========================================== */
+
+.chat-window{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    display:flex;
+
+    justify-content:center;
+
+    scroll-behavior:smooth;
+
+    padding:32px;
+
+    background:#111827;
+
+}
+
+/* ==========================================
+   MESSAGES CONTAINER
+========================================== */
+
+.messages{
+
+    width:100%;
+
+    max-width:950px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;
+
+    padding-bottom:140px;
+
+}
+
+/* ==========================================
+   USER MESSAGE
+========================================== */
+
+.user-message{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+}
+
+/* ==========================================
+   ASSISTANT MESSAGE
+========================================== */
+
+.assistant-message{
+
+    display:flex;
+
+    justify-content:flex-start;
+
+}
+
+/* ==========================================
+   CHAT BUBBLE
+========================================== */
+
+.message-content{
+
+    width:100%;
+
+    max-width:820px;
+
+    background:#1E293B;
+
+    border:1px solid #334155;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    color:white;
+
+    line-height:1.8;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+
+}
+
+/* ==========================================
+   USER BUBBLE
+========================================== */
+
+.user-message .message-content{
+
+    width:auto;
+
+    max-width:650px;
+
+    background:#2563EB;
+
+    border:none;
+
+    color:white;
+
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.loading{
+
+    color:#60A5FA;
+
+    font-style:italic;
+
+}
+
+/* ==========================================
+   JUDGMENT LIST TITLE
+========================================== */
+
+.message-content h3{
+
+    margin-bottom:20px;
+
+    font-size:22px;
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:900px){
+
+    .chat-window{
+
+        padding:18px;
+
+    }
+
+    .messages{
+
+        max-width:100%;
+
+    }
+
+    .message-content{
+
+        max-width:100%;
+
+    }
+
+}

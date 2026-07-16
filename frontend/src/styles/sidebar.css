@@ -1,0 +1,179 @@
+.sidebar{
+
+    width:300px;
+
+    background:#0F172A;
+
+    border-right:1px solid #1E293B;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.sidebar-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:28px 22px;
+
+    border-bottom:1px solid #1E293B;
+
+}
+
+.logo-box{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:16px;
+
+    background:#2563EB;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+}
+
+.sidebar-header h2{
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+.sidebar-header p{
+
+    color:#94A3B8;
+
+    margin-top:4px;
+
+    font-size:14px;
+
+}
+
+.new-chat-btn{
+
+    margin:20px;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#2563EB;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.25s;
+
+}
+
+.new-chat-btn:hover{
+
+    background:#1D4ED8;
+
+}
+
+.sidebar-title{
+
+    padding:0 22px;
+
+    margin-bottom:16px;
+
+    color:#94A3B8;
+
+    font-size:13px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+.sidebar-history{
+
+    flex:1;
+
+    overflow:auto;
+
+}
+
+.history-card{
+
+    margin:8px 14px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    background:transparent;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    color:#CBD5E1;
+
+}
+
+.history-card:hover{
+
+    background:#1E293B;
+
+}
+
+.sidebar-footer{
+
+    border-top:1px solid #1E293B;
+
+    padding:20px;
+
+}
+
+.footer-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:14px;
+
+    color:#94A3B8;
+
+    font-size:14px;
+
+}

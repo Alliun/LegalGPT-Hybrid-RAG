@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment Variables
+.env
+
+# VS Code
+.vscode/
+
+# Node
+node_modules/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Elasticsearch
+data/elasticsearch/
+
+# Python cache
+.pytest_cache/
+
+# HuggingFace
+.cache/
+
+# Jupyter
+.ipynb_checkpoints/
