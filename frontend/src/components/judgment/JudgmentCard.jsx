@@ -1,6 +1,6 @@
 import {
     BookOpen,
-    Scale,
+    Search,
     ExternalLink,
     Bookmark
 } from "lucide-react";
@@ -11,7 +11,11 @@ function JudgmentCard({
 
     judgment,
 
-    onExplain
+    onExplain,
+
+    onOpen,
+
+    onRelevant
 
 }) {
 
@@ -101,27 +105,19 @@ function JudgmentCard({
 
                 <button
 
-                    onClick={() => {
-
-                        alert("Compare feature coming soon.");
-
-                    }}
+                    onClick={() => onRelevant(judgment.citation)}
 
                 >
 
-                    <Scale size={18} />
+                    <Search size={18} />
 
-                    Compare
+                    Why Relevant
 
                 </button>
 
                 <button
 
-                    onClick={() => {
-
-                        alert("Open full judgment coming soon.");
-
-                    }}
+                    onClick={() => onOpen(judgment.citation)}
 
                 >
 

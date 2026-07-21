@@ -17,6 +17,8 @@ function Home() {
         }
     ]);
 
+    
+
     const bottomRef = useRef(null);
 
     // ============================================
@@ -304,6 +306,254 @@ const explainJudgment = async (citation) => {
 
 };
 
+// ============================================
+// Open Full Judgment
+// ============================================
+
+const openJudgment = async (citation) => {
+
+    const loadingId = Date.now();
+
+    setMessages(prev => [
+
+        ...prev,
+
+        {
+
+            id: loadingId,
+
+            role: "assistant",
+
+            type: "loading"
+
+        }
+
+    ]);
+
+    try {
+
+        const response = await fetch(
+
+            "http://127.0.0.1:5000/api/open",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    citation
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        setMessages(prev =>
+
+            prev.map(msg =>
+
+                msg.id === loadingId
+
+                    ? {
+
+                        id: loadingId,
+
+                        role: "assistant",
+
+                        type: "judgment",
+
+                        citation: data.citation,
+
+                        case_number: data.case_number,
+
+                        court: data.court,
+
+                        judges: data.judges,
+
+                        decided_date: data.decided_date,
+
+                        source_file: data.source_file,
+
+                        judgment_text: data.judgment_text
+
+                    }
+
+                    : msg
+
+            )
+
+        );
+
+    }
+
+    catch {
+
+        setMessages(prev =>
+
+            prev.map(msg =>
+
+                msg.id === loadingId
+
+                    ? {
+
+                        id: loadingId,
+
+                        role: "assistant",
+
+                        type: "text",
+
+                        content:
+
+                            "❌ Unable to open this judgment."
+
+                    }
+
+                    : msg
+
+            )
+
+        );
+
+    }
+
+};
+
+
+
+// ============================================
+// Compare Judgments
+// ============================================
+const relevanceAnalysis = async (citation) => {
+
+    const loadingId = Date.now();
+
+    setMessages(prev => [
+
+        ...prev,
+
+        {
+
+            id: loadingId,
+
+            role: "assistant",
+
+            type: "loading"
+
+        }
+
+    ]);
+
+    try {
+
+        const response = await fetch(
+
+            "http://127.0.0.1:5000/api/relevance",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    citation
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        setMessages(prev =>
+
+            prev.map(msg =>
+
+                msg.id === loadingId
+
+                    ? {
+
+                        id: loadingId,
+
+                        role: "assistant",
+
+                        type: "relevance",
+
+                        query: data.query,
+
+                        citation: data.citation,
+
+                        case_number: data.case_number,
+
+                        court: data.court,
+
+                        judges: data.judges,
+
+                        decided_date: data.decided_date,
+
+                        source_file: data.source_file,
+
+                        content: data.content
+
+                    }
+
+                    : msg
+
+            )
+
+        );
+
+    }
+
+    catch {
+
+        setMessages(prev =>
+
+            prev.map(msg =>
+
+                msg.id === loadingId
+
+                    ? {
+
+                        id: loadingId,
+
+                        role: "assistant",
+
+                        type: "text",
+
+                        content:
+
+                            "❌ Unable to generate relevance analysis."
+
+                    }
+
+                    : msg
+
+            )
+
+        );
+
+    }
+
+};
+    
+
     return (
 
         <div className="app">
@@ -318,7 +568,11 @@ const explainJudgment = async (citation) => {
 
                      messages={messages}
 
-                    onExplain={explainJudgment}
+                     onExplain={explainJudgment}
+
+                     onOpen={openJudgment}
+
+                     onRelevant={relevanceAnalysis}
 
                 />
 

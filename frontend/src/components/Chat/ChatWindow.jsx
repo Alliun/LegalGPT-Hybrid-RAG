@@ -6,7 +6,11 @@ function ChatWindow({
 
     messages,
 
-    onExplain
+    onExplain,
+
+    onOpen,
+
+    onRelevant
 
 }) {
 
@@ -39,6 +43,10 @@ function ChatWindow({
                             message={message}
 
                             onExplain={onExplain}
+
+                            onOpen={onOpen}
+
+                            onRelevant={onRelevant}
 
                         />
 

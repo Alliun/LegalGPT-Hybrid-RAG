@@ -6,7 +6,11 @@ function MessageBubble({
 
     message,
 
-    onExplain
+    onExplain,
+
+    onOpen,
+
+    onRelevant
 
 }) {
 
@@ -58,6 +62,10 @@ function MessageBubble({
 
                                 onExplain={onExplain}
 
+                                onOpen={onOpen}
+
+                                onRelevant={onRelevant}
+
                             />
 
                         ))
@@ -73,7 +81,7 @@ function MessageBubble({
     }
 
     // ==========================================
-    // Explanation Card
+    // Explanation
     // ==========================================
 
     if (message.type === "explanation") {
@@ -91,51 +99,33 @@ function MessageBubble({
                         <tbody>
 
                             <tr>
-
                                 <td><strong>Citation</strong></td>
-
                                 <td>{message.citation}</td>
-
                             </tr>
 
                             <tr>
-
                                 <td><strong>Court</strong></td>
-
                                 <td>{message.court}</td>
-
                             </tr>
 
                             <tr>
-
                                 <td><strong>Case No.</strong></td>
-
                                 <td>{message.case_number}</td>
-
                             </tr>
 
                             <tr>
-
                                 <td><strong>Judge</strong></td>
-
                                 <td>{message.judges}</td>
-
                             </tr>
 
                             <tr>
-
                                 <td><strong>Date</strong></td>
-
                                 <td>{message.decided_date}</td>
-
                             </tr>
 
                             <tr>
-
                                 <td><strong>Source</strong></td>
-
                                 <td>{message.source_file}</td>
-
                             </tr>
 
                         </tbody>
@@ -147,6 +137,147 @@ function MessageBubble({
                     <ReactMarkdown>
 
                         {message.content}
+
+                    </ReactMarkdown>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+    // ==========================================
+    // Relevance Analysis
+    // ==========================================
+
+    if (message.type === "relevance") {
+
+        return (
+
+            <div className="assistant-message">
+
+                <div className="message-content markdown-body">
+
+                    <h2>🎯 Why This Judgment is Relevant</h2>
+
+                    <table className="metadata-table">
+
+                        <tbody>
+
+                            <tr>
+                                <td><strong>User Query</strong></td>
+                                <td>{message.query}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Citation</strong></td>
+                                <td>{message.citation}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Court</strong></td>
+                                <td>{message.court}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Case No.</strong></td>
+                                <td>{message.case_number}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Judge</strong></td>
+                                <td>{message.judges}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Date</strong></td>
+                                <td>{message.decided_date}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Source</strong></td>
+                                <td>{message.source_file}</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <hr />
+
+                    <ReactMarkdown>
+
+                        {message.content}
+
+                    </ReactMarkdown>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+    // ==========================================
+    // Full Judgment
+    // ==========================================
+
+    if (message.type === "judgment") {
+
+        return (
+
+            <div className="assistant-message">
+
+                <div className="message-content markdown-body">
+
+                    <h2>⚖ Full Judgment</h2>
+
+                    <table className="metadata-table">
+
+                        <tbody>
+
+                            <tr>
+                                <td><strong>Citation</strong></td>
+                                <td>{message.citation}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Court</strong></td>
+                                <td>{message.court}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Case No.</strong></td>
+                                <td>{message.case_number}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Judge</strong></td>
+                                <td>{message.judges}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Date</strong></td>
+                                <td>{message.decided_date}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Source</strong></td>
+                                <td>{message.source_file}</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <hr />
+
+                    <ReactMarkdown>
+
+                        {message.judgment_text}
 
                     </ReactMarkdown>
 

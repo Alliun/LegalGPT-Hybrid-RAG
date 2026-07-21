@@ -6,13 +6,15 @@ import json
 from retrieval.hybrid_pipeline import run_pipeline
 
 from metadata.document_lookup import get_document_by_citation
-
+from query_processor.relevance import explain_relevance
 from query_processor.explain import explain_judgment
+from query_processor.compare import compare_judgments
 from query_processor.intent import detect_intent
 
 from memory.conversation_memory import (
     save_search,
-    get_last_results
+    get_last_results,
+    get_last_query
 )
 
 app = Flask(__name__)
@@ -183,7 +185,7 @@ def chat():
 
 
 # =====================================================
-# Direct Explain API
+# Explain API
 # =====================================================
 
 @app.route("/api/explain", methods=["POST"])
@@ -232,6 +234,222 @@ def explain():
             "source_file": document.get("source_file", ""),
 
             "content": explanation
+
+        })
+
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+
+            "error": str(e)
+
+        }), 500
+    
+
+# =====================================================
+# Relevance API
+# =====================================================
+
+@app.route("/api/relevance", methods=["POST"])
+def relevance():
+
+    try:
+
+        data = request.get_json()
+
+        citation = data.get("citation", "").strip()
+
+        if citation == "":
+
+            return jsonify({
+
+                "error": "Citation required."
+
+            }), 400
+
+        # Get the user's most recent search query
+        user_query = get_last_query()
+
+        if not user_query:
+
+            return jsonify({
+
+                "error": "No previous search query found."
+
+            }), 400
+
+        # Retrieve the judgment
+        document = get_document_by_citation(citation)
+
+        if document is None:
+
+            return jsonify({
+
+                "error": "Judgment not found."
+
+            }), 404
+
+        # Generate AI relevance analysis
+        analysis = explain_relevance(
+
+            user_query,
+            document
+
+        )
+
+        return jsonify({
+
+            "type": "relevance",
+
+            "citation": document.get("citation", ""),
+
+            "case_number": document.get("case_number", ""),
+
+            "court": document.get("court", ""),
+
+            "judges": document.get("judges", ""),
+
+            "decided_date": document.get("decided_date", ""),
+
+            "source_file": document.get("source_file", ""),
+
+            "query": user_query,
+
+            "content": analysis
+
+        })
+
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+
+            "error": str(e)
+
+        }), 500
+
+
+# =====================================================
+# Compare API
+# =====================================================
+
+@app.route("/api/compare", methods=["POST"])
+def compare():
+
+    try:
+
+        data = request.get_json()
+
+        citation1 = data.get("citation1", "").strip()
+        citation2 = data.get("citation2", "").strip()
+
+        if citation1 == "" or citation2 == "":
+
+            return jsonify({
+
+                "error": "Two citations are required."
+
+            }), 400
+
+        document1 = get_document_by_citation(citation1)
+        document2 = get_document_by_citation(citation2)
+
+        if document1 is None:
+
+            return jsonify({
+
+                "error": "First judgment not found."
+
+            }), 404
+
+        if document2 is None:
+
+            return jsonify({
+
+                "error": "Second judgment not found."
+
+            }), 404
+
+        comparison = compare_judgments(
+
+            document1,
+            document2
+
+        )
+
+        return jsonify({
+
+            "type": "comparison",
+
+            "citation1": document1.get("citation", ""),
+
+            "citation2": document2.get("citation", ""),
+
+            "content": comparison
+
+        })
+
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+
+            "error": str(e)
+
+        }), 500
+
+# =====================================================
+# Open Full Judgment API
+# =====================================================
+
+@app.route("/api/open", methods=["POST"])
+def open_judgment():
+
+    try:
+
+        data = request.get_json()
+
+        citation = data.get("citation", "").strip()
+
+        if citation == "":
+
+            return jsonify({
+
+                "error": "Citation required."
+
+            }), 400
+
+        document = get_document_by_citation(citation)
+
+        if document is None:
+
+            return jsonify({
+
+                "error": "Judgment not found."
+
+            }), 404
+
+        return jsonify({
+
+            "type": "judgment",
+
+            "citation": document.get("citation", ""),
+
+            "case_number": document.get("case_number", ""),
+
+            "court": document.get("court", ""),
+
+            "judges": document.get("judges", ""),
+
+            "decided_date": document.get("decided_date", ""),
+
+            "source_file": document.get("source_file", ""),
+
+            "judgment_text": document.get("judgment_text", "")
 
         })
 

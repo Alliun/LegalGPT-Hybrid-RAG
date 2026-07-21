@@ -42,7 +42,7 @@ function Topbar() {
 
                     <Cpu size={18}/>
 
-                    Llama 3
+                    HAIKU 4.5
 
                 </div>
 
