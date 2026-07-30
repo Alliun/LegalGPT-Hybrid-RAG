@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
 
-import JudgmentCard from "../judgment/JudgmentCard";
+
 
 function MessageBubble({
 
@@ -27,50 +27,6 @@ function MessageBubble({
                 <div className="message-content loading">
 
                     LegalGPT is thinking...
-
-                </div>
-
-            </div>
-
-        );
-
-    }
-
-    // ==========================================
-    // Judgment List
-    // ==========================================
-
-    if (message.type === "judgment-list") {
-
-        return (
-
-            <div className="assistant-message">
-
-                <div className="message-content">
-
-                    <h3>⚖ Relevant Judgments</h3>
-
-                    {
-
-                        message.data.map(judgment => (
-
-                            <JudgmentCard
-
-                                key={judgment.rank}
-
-                                judgment={judgment}
-
-                                onExplain={onExplain}
-
-                                onOpen={onOpen}
-
-                                onRelevant={onRelevant}
-
-                            />
-
-                        ))
-
-                    }
 
                 </div>
 

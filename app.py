@@ -1,3 +1,4 @@
+from conversation.conversation_manager import handle_message
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -9,7 +10,7 @@ from metadata.document_lookup import get_document_by_citation
 from query_processor.relevance import explain_relevance
 from query_processor.explain import explain_judgment
 from query_processor.compare import compare_judgments
-from query_processor.intent import detect_intent
+
 
 from memory.conversation_memory import (
     save_search,
@@ -74,19 +75,50 @@ def chat():
         # Detect Intent
         # =====================================================
 
-        intent = detect_intent(query)
+        decision = handle_message(query)
 
         print("\n")
         print("=" * 80)
-        print("INTENT")
+        print("CONVERSATION DECISION")
         print("=" * 80)
-        print(intent)
+        print(decision)
+
+        # =====================================================
+        # Direct Conversation Response
+        # =====================================================
+
+        if decision["action"] == "respond":
+
+            return jsonify({
+
+        "type": "text",
+
+        "content": decision["response"]
+
+    })
+
+
+        # =====================================================
+        # Clarification Response
+        # =====================================================
+
+        if decision["action"] == "clarify":
+
+                return jsonify({
+
+        "type": "clarification",
+
+        "content": decision["question"]
+
+    })
+
+         
 
         # =====================================================
         # Explain Previous Judgment
         # =====================================================
 
-        if intent["intent"] == "explain":
+        if decision["action"] == "explain":
 
             results = get_last_results()
 
@@ -99,7 +131,7 @@ def chat():
 
                 }), 400
 
-            number = intent["judgment_number"]
+            number = decision["judgment_number"]
 
             if number < 1 or number > len(results):
 
@@ -140,7 +172,7 @@ def chat():
         # Search Intent
         # =====================================================
 
-        merged_results, llm_output = run_pipeline(query)
+        merged_results, llm_output = run_pipeline(decision["query"])
 
         cleaned = (
 
@@ -151,7 +183,25 @@ def chat():
 
         )
 
+        print("\n")
+        print("=" * 80)
+        print("RAW LLM OUTPUT")
+        print("=" * 80)
+        print(llm_output)
+
+        print("\n")
+        print("=" * 80)
+        print("PARSED RESPONSE")
+        print("=" * 80)
+        print(cleaned)
+
         response = json.loads(cleaned)
+
+        # ========================================
+        # Normalize Search Response
+        # ========================================
+
+        response["type"] = "judgment-list"
 
         save_search(query, merged_results)
 
@@ -166,6 +216,12 @@ def chat():
         print("RESULTS STORED")
         print("=" * 80)
         print(len(merged_results))
+
+        print("\n")
+        print("=" * 80)
+        print("FINAL RESPONSE")
+        print("=" * 80)
+        print(response)
 
         return jsonify(response)
 

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-
+import JudgmentList from "../components/judgment/JudgmentList";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Topbar from "../components/Topbar/Topbar";
 import ChatWindow from "../components/Chat/ChatWindow";
-import ChatInput from "../components/Input/ChatInput";
+
 
 function Home() {
-
+    const [judgments, setJudgments] = useState([]);
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -102,40 +102,127 @@ function Home() {
             );
 
             const data = await response.json();
+let assistantMessage;
 
-            let assistantMessage;
+// ========================================
+// Simple Text Response
+// ========================================
 
-            if (data.type === "explanation") {
+if (data.type === "text") {
 
-                assistantMessage = {
+    assistantMessage = {
 
-                    id: loadingId,
+        id: loadingId,
 
-                    role: "assistant",
+        role: "assistant",
 
-                    type: "text",
+        type: "text",
 
-                    content: data.content
+        content: data.content
 
-                };
+    };
 
-            }
+}
 
-            else {
+// ========================================
+// Clarification
+// ========================================
 
-                assistantMessage = {
+else if (data.type === "clarification") {
 
-                    id: loadingId,
+    assistantMessage = {
 
-                    role: "assistant",
+        id: loadingId,
 
-                    type: "judgment-list",
+        role: "assistant",
 
-                    data: data.results
+        type: "text",
 
-                };
+        content: data.content
 
-            }
+    };
+
+}
+
+// ========================================
+// Explanation
+// ========================================
+
+else if (data.type === "explanation") {
+
+    assistantMessage = {
+
+        id: loadingId,
+
+        role: "assistant",
+
+        type: "explanation",
+
+        citation: data.citation,
+
+        case_number: data.case_number,
+
+        court: data.court,
+
+        judges: data.judges,
+
+        decided_date: data.decided_date,
+
+        source_file: data.source_file,
+
+        content: data.content
+
+    };
+
+}
+
+// ========================================
+// Judgment Search Results
+// ========================================
+
+else if (data.type === "judgment-list") {
+
+    // Update the right sidebar
+    setJudgments(data.results || []);
+
+    // Add a conversational response in chat
+    assistantMessage = {
+
+        id: loadingId,
+
+        role: "assistant",
+
+        type: "text",
+
+        content: `I found ${data.results.length} relevant judgments.
+
+They are displayed in the right sidebar.
+
+You can ask me to explain one, open the full judgment, or tell you why it is relevant.`
+
+    };
+
+}
+
+// ========================================
+// Fallback
+// ========================================
+
+else {
+
+    assistantMessage = {
+
+        id: loadingId,
+
+        role: "assistant",
+
+        type: "text",
+
+        content: "Unexpected response from the backend."
+
+    };
+
+}
 
             setMessages(prev =>
 
@@ -235,6 +322,7 @@ const explainJudgment = async (citation) => {
         );
 
         const data = await response.json();
+        console.log(data);
 
       setMessages(prev =>
 
@@ -554,41 +642,71 @@ const relevanceAnalysis = async (citation) => {
 };
     
 
-    return (
+   return (
 
-        <div className="app">
+    <div className="app">
+
+        {/* =========================
+            Left Sidebar
+        ========================= */}
+
+        <aside className="left-sidebar">
 
             <Sidebar />
 
-            <div className="main">
+        </aside>
 
-                <Topbar />
+        {/* =========================
+            Center
+        ========================= */}
 
-               <ChatWindow
+        <main className="main">
 
-                     messages={messages}
+            <Topbar />
 
-                     onExplain={explainJudgment}
+            <ChatWindow
 
-                     onOpen={openJudgment}
+                messages={messages}
 
-                     onRelevant={relevanceAnalysis}
+                onSend={sendMessage}
 
-                />
+                onExplain={explainJudgment}
 
-                <div ref={bottomRef} />
+                onOpen={openJudgment}
 
-                <ChatInput
+                onRelevant={relevanceAnalysis}
 
-                    onSend={sendMessage}
+            />
 
-                />
+            <div ref={bottomRef} />
 
-            </div>
+            
 
-        </div>
+        </main>
 
-    );
+        {/* =========================
+            Right Sidebar
+        ========================= */}
+
+        <aside className="right-sidebar">
+
+            <JudgmentList
+
+                judgments={judgments}
+
+                onExplain={explainJudgment}
+
+                onOpen={openJudgment}
+
+                onRelevant={relevanceAnalysis}
+
+            />
+
+        </aside>
+
+    </div>
+
+);
 
 }
 
