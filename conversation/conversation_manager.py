@@ -1,6 +1,8 @@
 from conversation.intent_classifier import detect_intent
-
 from conversation.clarification import needs_clarification
+from conversation.context import conversation_context
+from conversation.guardrails import run_guardrails
+from conversation.followup import resolve_followup
 
 from conversation.responses import (
     GREETING_RESPONSE,
@@ -16,13 +18,74 @@ from conversation.responses import (
 
 def handle_message(query):
 
+    # =====================================================
+    # Store User Message
+    # =====================================================
+
+    conversation_context.add_user_message(query)
+
+    # =====================================================
+    # Guardrails
+    # =====================================================
+
+    guardrail = run_guardrails(
+        query,
+        conversation_context
+    )
+
+    if guardrail:
+
+        conversation_context.add_ai_message(
+            guardrail["response"]
+        )
+
+        conversation_context.set_last_action("guardrail")
+        conversation_context.set_last_intent("guardrail")
+
+        return {
+
+            "action": "respond",
+
+            "response": guardrail["response"]
+
+        }
+
+    # =====================================================
+    # Detect Intent
+    # =====================================================
+
     intent = detect_intent(query)
 
-    # ==========================================
+    conversation_context.set_last_intent(
+        intent["intent"]
+    )
+
+    # =====================================================
+    # Resolve Follow-up References
+    # =====================================================
+
+    followup_index = resolve_followup(
+        query,
+        conversation_context
+    )
+
+    if followup_index is not None:
+
+        conversation_context.set_active_judgment(
+            followup_index
+        )
+
+    # =====================================================
     # Greeting
-    # ==========================================
+    # =====================================================
 
     if intent["intent"] == "greeting":
+
+        conversation_context.add_ai_message(
+            GREETING_RESPONSE
+        )
+
+        conversation_context.set_last_action("greeting")
 
         return {
 
@@ -32,11 +95,17 @@ def handle_message(query):
 
         }
 
-    # ==========================================
+    # =====================================================
     # Goodbye
-    # ==========================================
+    # =====================================================
 
     if intent["intent"] == "goodbye":
+
+        conversation_context.add_ai_message(
+            GOODBYE_RESPONSE
+        )
+
+        conversation_context.set_last_action("goodbye")
 
         return {
 
@@ -46,11 +115,17 @@ def handle_message(query):
 
         }
 
-    # ==========================================
+    # =====================================================
     # Thanks
-    # ==========================================
+    # =====================================================
 
     if intent["intent"] == "thanks":
+
+        conversation_context.add_ai_message(
+            THANKS_RESPONSE
+        )
+
+        conversation_context.set_last_action("thanks")
 
         return {
 
@@ -60,11 +135,17 @@ def handle_message(query):
 
         }
 
-    # ==========================================
+    # =====================================================
     # Help
-    # ==========================================
+    # =====================================================
 
     if intent["intent"] == "help":
+
+        conversation_context.add_ai_message(
+            HELP_RESPONSE
+        )
+
+        conversation_context.set_last_action("help")
 
         return {
 
@@ -74,11 +155,15 @@ def handle_message(query):
 
         }
 
-    # ==========================================
+    # =====================================================
     # Follow-up Commands
-    # ==========================================
+    # =====================================================
 
     if intent["intent"] == "follow_up":
+
+        conversation_context.set_last_action(
+            intent["action"]
+        )
 
         return {
 
@@ -88,13 +173,25 @@ def handle_message(query):
 
         }
 
-    # ==========================================
-    # Clarification Guardrail
-    # ==========================================
+    # =====================================================
+    # Clarification
+    # =====================================================
 
     clarification = needs_clarification(query)
 
     if clarification["needs_clarification"]:
+
+        conversation_context.add_ai_message(
+            clarification["question"]
+        )
+
+        conversation_context.set_last_action(
+            "clarify"
+        )
+
+        conversation_context.set_pending_clarification(
+            clarification["keyword"]
+        )
 
         return {
 
@@ -106,9 +203,13 @@ def handle_message(query):
 
         }
 
-    # ==========================================
-    # Default Legal Search
-    # ==========================================
+    # =====================================================
+    # Default Search
+    # =====================================================
+
+    conversation_context.set_last_action("search")
+    conversation_context.set_current_topic(query)
+    conversation_context.clear_pending_clarification()
 
     return {
 

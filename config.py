@@ -47,6 +47,6 @@ DATA_FOLDER = "data/corpus"
 # Claude API
 # =====================================================
 
-ANTHROPIC_API_KEY = ""
+ANTHROPIC_API_KEY = "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"
 
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"

@@ -1,3 +1,4 @@
+from conversation.context import conversation_context
 from conversation.conversation_manager import handle_message
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -12,11 +13,8 @@ from query_processor.explain import explain_judgment
 from query_processor.compare import compare_judgments
 
 
-from memory.conversation_memory import (
-    save_search,
-    get_last_results,
-    get_last_query
-)
+# Legacy memory (temporary)
+from memory.conversation_memory import save_search
 
 app = Flask(__name__)
 
@@ -120,7 +118,7 @@ def chat():
 
         if decision["action"] == "explain":
 
-            results = get_last_results()
+            results = conversation_context.get_last_results()
 
             if len(results) == 0:
 
@@ -197,6 +195,8 @@ def chat():
 
         response = json.loads(cleaned)
 
+        
+
         # ========================================
         # Normalize Search Response
         # ========================================
@@ -204,6 +204,18 @@ def chat():
         response["type"] = "judgment-list"
 
         save_search(query, merged_results)
+
+
+        conversation_context.save_search(
+            query,
+            merged_results
+        )
+
+        conversation_context.save_search
+        (
+            query,
+            merged_results
+        )
 
         print("\n")
         print("=" * 80)
@@ -273,6 +285,8 @@ def explain():
 
         explanation = explain_judgment(document)
 
+        
+
         return jsonify({
 
             "type": "explanation",
@@ -326,7 +340,7 @@ def relevance():
             }), 400
 
         # Get the user's most recent search query
-        user_query = get_last_query()
+        user_query = conversation_context.get_last_query()
 
         if not user_query:
 
@@ -354,6 +368,8 @@ def relevance():
             document
 
         )
+
+     
 
         return jsonify({
 
@@ -488,6 +504,8 @@ def open_judgment():
                 "error": "Judgment not found."
 
             }), 404
+
+        
 
         return jsonify({
 
